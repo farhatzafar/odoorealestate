@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="estate_property_tree_view" model="ir.ui.view">
-        <field name="name">estate.property.tree.view</field>
+    <record id="estate_property_list_view" model="ir.ui.view">
+        <field name="name">estate.property.list.view</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
             <list string="Estate Properties">
@@ -52,6 +52,22 @@
                     </notebook>
                 </sheet>
             </form>
+        </field>
+    </record>
+        <record id="estate_property_search_view" model="ir.ui.view">
+        <field name="name">estate.property.search</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <search string="Search...">
+                <field name="name"/>
+                <field name="postcode"/>
+                <field name="expected_price"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="facades"/>
+                <filter name="available" string="Available" domain="['|',('state','=','new'), ('state','=','offer_received')]"/>
+                <filter name="group_by_postcode" string="Postcode" context="{'group_by':'postcode'}"/>
+            </search>
         </field>
     </record>
     <record id="estate_property_action" model="ir.actions.act_window">
