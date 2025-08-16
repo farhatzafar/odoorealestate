@@ -1,5 +1,6 @@
 from datetime import timedelta
-from odoo import fields, models
+from odoo import fields, models, _
+from odoo.exceptions import UserError
 
 
 class EstateProperty(models.Model):
@@ -29,9 +30,10 @@ class EstateProperty(models.Model):
     state = fields.Selection(
         string='State',
         selection=[
-            ('new', 'New'), ('offer_received', 'Offer Received'), ('offer_accepted', 'Offer_Accepted'),
+            ('new', 'New'), ('offer_received',
+                             'Offer Received'), ('offer_accepted', 'Offer_Accepted'),
             ('sold', 'Sold'), ('cancelled', 'Cancelled')
-            ],
+        ],
         required=True, copy=False, default='new'
     )
 
@@ -49,3 +51,38 @@ class EstateProperty(models.Model):
     tag_ids = fields.Many2many("estate.property.tag", string="Property Tags")
 
     offer_ids = fields.One2many("estate.property.offer", "property_id")
+
+    # Function to calculate total area baased on: total area = living area + garden area
+    @api.depends("living_area", "garden_area")
+    def _compute_total_area(self):
+        for record in self:
+            record.total_area = record.living_area + record.garden_area
+
+    total_area = fields.Integer(string="Total Area (sqm)", compute=(
+        _compute_total_area), readonly=True)
+
+    # Function to calculate best price i.e hightest/maximum of the offers' price
+    @api.depends("offer_ids.price")
+    def _compute_best_price(self):
+        for record in self:
+            if record.offer_ids:
+                record.best_price = max(record.offer_ids.mapped("price"))
+            else:
+                record.best_price = 0.0
+
+    best_price = fields.Float(
+        string="Best Offer", compute=(_compute_best_price))
+
+    def cancel_button(self):
+        for record in self:
+            if record.state == 'sold':
+                raise UserError(_("Sold properties cannot be cancelled"))
+            else:
+                record.state = 'cancelled'
+
+    def sold_button(self):
+        for record in self:
+            if record.state == 'cancelled':
+                raise UserError(_("Cancelled properties cannot be sold"))
+            else:
+                record.state = 'sold'
