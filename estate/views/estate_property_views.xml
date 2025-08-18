@@ -5,7 +5,8 @@
         <field name="name">estate.property.list.view</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <list string="Estate Properties">
+            <list string="Estate Properties" decoration-success="state in ('offer_accepted', 'offer_received')" 
+            decoration-bf="state == 'offer_accepted'" decoration-muted="state == 'sold'">
                     <field name="name"/>
                     <field name="property_type_id"/>
                     <field name="postcode"/>
@@ -13,7 +14,7 @@
                     <field name="living_area"/>
                     <field name="expected_price"/>
                     <field name="selling_price"/>
-                    <field name="date_availability"/>
+                    <field name="date_availability" optional="hidden"/>
             </list>
         </field>
     </record>
