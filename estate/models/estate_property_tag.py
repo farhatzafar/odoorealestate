@@ -7,3 +7,5 @@ class EstatePropertyTaf(models.Model):
     _order = "name"
 
     name = fields.Char(string='Name', required=True)
+
+    color = fields.Integer('Color')
