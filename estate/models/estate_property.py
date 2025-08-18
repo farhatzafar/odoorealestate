@@ -6,6 +6,7 @@ from odoo.tools import float_compare, float_is_zero
 class EstateProperty(models.Model):
     _name = "estate.property"
     _description = "Info on real estate properties"
+    _order = "id desc"
 
     # SQL constraints, expected price must be strictly positive, selling price must be positive
     _sql_constraints = [

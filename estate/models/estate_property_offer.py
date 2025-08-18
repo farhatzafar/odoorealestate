@@ -1,10 +1,11 @@
-from odoo import fields, models, _
+from odoo import fields, models, api _
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
 
 class EstatePropertyOffer(models.Model):
     _name = "estate.property.offer"
     _description = "Estate property offer"
+    _order = "price desc"
 
     price = fields.Float(string='Price')
     status = fields.Selection(
