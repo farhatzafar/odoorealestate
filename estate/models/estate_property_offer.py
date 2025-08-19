@@ -56,3 +56,20 @@ class EstatePropertyOffer(models.Model):
 
     def refuse_offer_button(self):
         self.status = 'refused'
+
+#At offer creation, set the property state to ‘Offer Received’. 
+    #Also raise an error if the user tries to create an offer with a lower amount than an existing offer.
+    @api.model
+    def create(self, vals):
+        property_record = self.env['estate.property'].browse(vals['property_id'])
+
+        existing_offers = property_record.offer_ids
+        if existing_offers:
+            max_offer_price = max(existing_offers.mapped('price'))
+            if vals.get('price', 0) < max_offer_price:
+                raise UserError(_("You cannot create an offer lower than an existing offer (%s).") % max_offer_price)
+
+        if property_record.state == 'new':
+            property_record.state = 'offer_received'
+
+        return super().create(vals)
