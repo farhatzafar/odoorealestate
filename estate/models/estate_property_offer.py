@@ -2,6 +2,7 @@ from odoo import fields, models, api _
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
 
+
 class EstatePropertyOffer(models.Model):
     _name = "estate.property.offer"
     _description = "Estate property offer"
@@ -21,6 +22,9 @@ class EstatePropertyOffer(models.Model):
         "res.partner", string='Partner', required=True)
 
     property_id = fields.Many2one("estate.property", required=True)
+
+    property_type_id = fields.Many2one(
+        "estate.property.type", related="property_id.property_type_id", string="Property Type")
 
     # Compute deadline as sum of offer fields: create_date and validity
     @api.depends("validity", "create_date")
