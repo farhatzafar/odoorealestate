@@ -98,11 +98,47 @@
         </field>
     </record>
 
+    <!--Kanban view for the estate property model-->
+    <record id="estate_property_kanban_view" model="ir.ui.view">
+        <field name="name">estate.property.kanban.view</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="property_type_id" records_draggable="false">
+            <field name="state"/>
+            <field name="selling_price"/>
+            <field name="expected_price"/>
+            <field name="best_price"/>
+            <field name="tag_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                    <div class="oe_kanban_global_click">
+                        <div>
+                            <h4><b><field name="name"/></b></h4>
+                        </div>
+                        <div t-if="record.state.raw_value == 'offer_accepted'">
+                        <p>Selling Price: <field name="selling_price"/></p>
+                        </div>
+                        <div>
+                            <p>Expected Price: <field name="expected_price"/></p>
+                        </div>
+                        <div t-if="record.state.raw_value == 'offer_received'">
+                            <p>Best Price: <field name="best_price"/></p>
+                        </div>
+                        <div>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!--Action for the estate property model-->
     <record id="estate_property_action" model="ir.actions.act_window">
         <field name="name">Properties</field>
         <field name="res_model">estate.property</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="context">{'search_default_available': True}</field>
     </record>
 </odoo>
